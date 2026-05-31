@@ -1,5 +1,6 @@
 'use client'
 import { useState } from 'react'
+import { io } from 'socket.io-client'
 import { Header } from '@/components/layout/Header'
 import { VideoCallRoom } from '@/components/video/VideoCallRoom'
 import { CallDialing } from '@/components/video/CallDialing'
@@ -25,7 +26,11 @@ export default function VideoCallPage() {
     })
     const { token: t } = await res.json()
     setToken(t)
-    setTimeout(() => setState('connected'), 3000)
+    const socket = io(process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:3001')
+    socket.emit('join:user', user?.id || 'anon')
+    socket.emit('call:request', { roomName, userName: user?.fullName || 'user', userId: user?.id || 'anon' })
+    socket.on('call:accepted', () => setState('connected'))
+    socket.on('call:rejected', () => { setState('idle'); alert('スタッフが対応できません') })
   }
 
   if (state === 'connected' && token) {
