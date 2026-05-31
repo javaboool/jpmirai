@@ -4,7 +4,14 @@ import { ClerkProvider } from '@clerk/nextjs'
 import { routing } from '@/i18n/routing'
 import { notFound } from 'next/navigation'
 import type { Locale } from 'next-intl'
+import type { Metadata } from 'next'
 import '../globals.css'
+
+export const metadata: Metadata = {
+  title: 'JP-Mirai Portal',
+  description: '外国人技能実習生・特定技能外国人支援ポータル',
+  manifest: '/manifest.json',
+}
 
 export default async function LocaleLayout({
   children,
