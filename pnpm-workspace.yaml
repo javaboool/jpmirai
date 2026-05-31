@@ -1,3 +1,5 @@
+allowBuilds:
+  esbuild: true
 onlyBuiltDependencies:
   - "@clerk/shared"
   - "@parcel/watcher"
