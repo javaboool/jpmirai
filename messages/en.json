@@ -1,0 +1,25 @@
+{
+  "nav": {
+    "home": "Home",
+    "news": "News",
+    "messages": "Messages",
+    "notices": "Notices",
+    "consult": "Consult"
+  },
+  "home": {
+    "hero_title": "JP-Mirai Portal",
+    "hero_subtitle": "Support for Technical Intern Trainees and Specified Skilled Workers",
+    "search_placeholder": "Search...",
+    "view_more": "View More"
+  },
+  "consult": {
+    "title": "Consult Us",
+    "subtitle": "We are here to help anytime",
+    "chat": "Chat",
+    "email": "Email",
+    "video_call": "Video Call",
+    "chat_desc": "Chat with staff in real time",
+    "email_desc": "Send us an email inquiry",
+    "video_desc": "Video call with our staff"
+  }
+}

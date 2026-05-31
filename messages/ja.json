@@ -1,0 +1,25 @@
+{
+  "nav": {
+    "home": "ホーム",
+    "news": "ニュース",
+    "messages": "メッセージ",
+    "notices": "お知らせ",
+    "consult": "相談する"
+  },
+  "home": {
+    "hero_title": "JP-Mirai ポータル",
+    "hero_subtitle": "外国人技能実習生・特定技能外国人の皆様へ",
+    "search_placeholder": "キーワードを入力...",
+    "view_more": "もっと見る"
+  },
+  "consult": {
+    "title": "相談する",
+    "subtitle": "いつでもお気軽にご相談ください",
+    "chat": "チャット",
+    "email": "メール",
+    "video_call": "ビデオ通話",
+    "chat_desc": "リアルタイムでスタッフとチャット",
+    "email_desc": "メールでお問い合わせ",
+    "video_desc": "ビデオ通話でスタッフに相談"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "nav": {
+    "home": "首页",
+    "news": "新闻",
+    "messages": "消息",
+    "notices": "通知",
+    "consult": "咨询"
+  },
+  "home": {
+    "hero_title": "JP-Mirai 门户",
+    "hero_subtitle": "为外国技能实习生和特定技能外国人提供支持",
+    "search_placeholder": "搜索...",
+    "view_more": "查看更多"
+  },
+  "consult": {
+    "title": "咨询",
+    "subtitle": "随时欢迎您的咨询",
+    "chat": "聊天",
+    "email": "邮件",
+    "video_call": "视频通话",
+    "chat_desc": "与工作人员实时聊天",
+    "email_desc": "通过邮件联系我们",
+    "video_desc": "与工作人员视频通话"
+  }
+}
