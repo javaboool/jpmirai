@@ -21,7 +21,9 @@ export const Settings: CollectionConfig = {
     {
       name: 'livekit_api_secret',
       type: 'text',
-      admin: { description: 'Keep secret — used server-side only' },
+      admin: {
+        description: 'Keep secret — server-side only. TODO: add field encryption in production.',
+      },
     },
     {
       name: 'livekit_url',
@@ -34,7 +36,7 @@ export const Settings: CollectionConfig = {
     {
       name: 'smtp_pass',
       type: 'text',
-      admin: { description: 'Gmail App Password' },
+      admin: { description: 'Gmail App Password. TODO: add field encryption in production.' },
     },
     {
       name: 'staff_email',
