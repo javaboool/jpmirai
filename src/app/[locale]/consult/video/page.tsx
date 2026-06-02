@@ -19,12 +19,22 @@ export default function VideoCallPage() {
   const startCall = async () => {
     setState('dialing')
     const roomName = `consult-${Date.now()}`
-    const res = await fetch('/api/livekit/token', {
-      method: 'POST',
-      body: JSON.stringify({ roomName, participantName: user?.fullName || 'user' }),
-      headers: { 'Content-Type': 'application/json' },
-    })
-    const { token: t } = await res.json()
+    let t: string
+    try {
+      const res = await fetch('/api/livekit/token', {
+        method: 'POST',
+        body: JSON.stringify({ roomName, participantName: user?.fullName || 'user' }),
+        headers: { 'Content-Type': 'application/json' },
+      })
+      if (!res.ok) throw new Error(`HTTP ${res.status}`)
+      const data = await res.json()
+      if (!data.token) throw new Error('No token in response')
+      t = data.token
+    } catch (e) {
+      setState('idle')
+      alert('LiveKit未設定。.env.localにLIVEKIT_API_KEY/SECRETを設定してください。')
+      return
+    }
     setToken(t)
     const socket = io(process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:3001')
     socket.emit('join:user', user?.id || 'anon')

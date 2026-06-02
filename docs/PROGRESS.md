@@ -6,9 +6,9 @@
 ## 进度总览
 
 ```
-整体进度: 0 / 14 tasks completed (0%)
+整体进度: 2 / 14 tasks completed (14%)
 
-[░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 0%
+[████░░░░░░░░░░░░░░░░░░░░░░░░░░] 14%
 ```
 
 ---
@@ -37,8 +37,8 @@ Task 1: Scaffold
 
 | # | Task | 负责 Agent | 状态 | 预计耗时 | 备注 |
 |---|------|-----------|------|---------|------|
-| 1 | Project Scaffold | implementer-1 | ⬜ pending | 1h | 首个，无依赖 |
-| 2 | Payload CMS Setup | implementer-2 | 🔒 blocked(1) | 2h | 需 Task 1 完成 |
+| 1 | Project Scaffold | implementer-1 | ✅ e74ec1d | 1h | 完成 |
+| 2 | Payload CMS Setup | implementer-2 | ✅ 57f0103 | 2h | 完成，含 access control fix |
 | 3 | Internationalization | implementer-3 | 🔒 blocked(1) | 1.5h | 需 Task 1 完成 |
 | 4 | Core UI Components | implementer-4 | 🔒 blocked(2,3) | 2h | 需 Task 2+3 完成 |
 | 5 | Home Page | implementer-5 | 🔒 blocked(4) | 1.5h | 需 Task 4 完成 |

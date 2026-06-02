@@ -29,7 +29,14 @@ export default buildConfig({
     fallback: true,
   },
   db: postgresAdapter({
-    pool: { connectionString: process.env.DATABASE_URI || '' },
+    pool: {
+      connectionString: process.env.DATABASE_URI || '',
+      ssl: process.env.DATABASE_URI?.includes('neon.tech') ? { rejectUnauthorized: false } : false,
+      connectionTimeoutMillis: 30000,
+      idleTimeoutMillis: 60000,
+      max: 3,
+    },
+    push: false,
   }),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

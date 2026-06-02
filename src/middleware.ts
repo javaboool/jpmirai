@@ -3,7 +3,7 @@ import { routing } from './i18n/routing'
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
 
 const handleI18n = createMiddleware(routing)
-const isProtectedRoute = createRouteMatcher(['/*/staff(.*)', '/*/admin(.*)'])
+const isProtectedRoute = createRouteMatcher(['/:locale/staff/:path*', '/:locale/admin/:path*'])
 
 export default clerkMiddleware(async (auth, req) => {
   if (isProtectedRoute(req)) await auth.protect()
@@ -11,5 +11,5 @@ export default clerkMiddleware(async (auth, req) => {
 })
 
 export const config = {
-  matcher: ['/((?!_next|_payload|api/payload|.*\\..*).*)'],
+  matcher: ['/((?!_next|_payload|admin|api|.*\\..*).*)'],
 }
