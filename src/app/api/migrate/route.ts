@@ -47,15 +47,6 @@ CREATE UNIQUE INDEX IF NOT EXISTS "media_filename_idx" ON "media" ("filename");
 
 CREATE TABLE IF NOT EXISTS "news" (
   "id" serial PRIMARY KEY,
-  "title" varchar NOT NULL,
-  "title_en" varchar,
-  "title_zh" varchar,
-  "summary" varchar,
-  "summary_en" varchar,
-  "summary_zh" varchar,
-  "content" jsonb,
-  "content_en" jsonb,
-  "content_zh" jsonb,
   "cover_image_id" integer REFERENCES "media"("id"),
   "published_at" timestamp with time zone NOT NULL,
   "slug" varchar NOT NULL,
@@ -64,17 +55,18 @@ CREATE TABLE IF NOT EXISTS "news" (
 );
 CREATE UNIQUE INDEX IF NOT EXISTS "news_slug_idx" ON "news" ("slug");
 
-CREATE TABLE IF NOT EXISTS "messages" (
+CREATE TABLE IF NOT EXISTS "news_locales" (
   "id" serial PRIMARY KEY,
   "title" varchar NOT NULL,
-  "title_en" varchar,
-  "title_zh" varchar,
   "summary" varchar,
-  "summary_en" varchar,
-  "summary_zh" varchar,
   "content" jsonb,
-  "content_en" jsonb,
-  "content_zh" jsonb,
+  "_locale" varchar NOT NULL,
+  "_parent_id" integer NOT NULL REFERENCES "news"("id") ON DELETE CASCADE
+);
+CREATE UNIQUE INDEX IF NOT EXISTS "news_locale_parent_id_locale_idx" ON "news_locales" ("_locale", "_parent_id");
+
+CREATE TABLE IF NOT EXISTS "messages" (
+  "id" serial PRIMARY KEY,
   "cover_image_id" integer REFERENCES "media"("id"),
   "published_at" timestamp with time zone NOT NULL,
   "slug" varchar NOT NULL,
@@ -83,17 +75,18 @@ CREATE TABLE IF NOT EXISTS "messages" (
 );
 CREATE UNIQUE INDEX IF NOT EXISTS "messages_slug_idx" ON "messages" ("slug");
 
-CREATE TABLE IF NOT EXISTS "notices" (
+CREATE TABLE IF NOT EXISTS "messages_locales" (
   "id" serial PRIMARY KEY,
   "title" varchar NOT NULL,
-  "title_en" varchar,
-  "title_zh" varchar,
   "summary" varchar,
-  "summary_en" varchar,
-  "summary_zh" varchar,
   "content" jsonb,
-  "content_en" jsonb,
-  "content_zh" jsonb,
+  "_locale" varchar NOT NULL,
+  "_parent_id" integer NOT NULL REFERENCES "messages"("id") ON DELETE CASCADE
+);
+CREATE UNIQUE INDEX IF NOT EXISTS "messages_locale_parent_id_locale_idx" ON "messages_locales" ("_locale", "_parent_id");
+
+CREATE TABLE IF NOT EXISTS "notices" (
+  "id" serial PRIMARY KEY,
   "cover_image_id" integer REFERENCES "media"("id"),
   "published_at" timestamp with time zone NOT NULL,
   "slug" varchar NOT NULL,
@@ -101,6 +94,16 @@ CREATE TABLE IF NOT EXISTS "notices" (
   "created_at" timestamp with time zone DEFAULT now() NOT NULL
 );
 CREATE UNIQUE INDEX IF NOT EXISTS "notices_slug_idx" ON "notices" ("slug");
+
+CREATE TABLE IF NOT EXISTS "notices_locales" (
+  "id" serial PRIMARY KEY,
+  "title" varchar NOT NULL,
+  "summary" varchar,
+  "content" jsonb,
+  "_locale" varchar NOT NULL,
+  "_parent_id" integer NOT NULL REFERENCES "notices"("id") ON DELETE CASCADE
+);
+CREATE UNIQUE INDEX IF NOT EXISTS "notices_locale_parent_id_locale_idx" ON "notices_locales" ("_locale", "_parent_id");
 
 CREATE TABLE IF NOT EXISTS "settings" (
   "id" serial PRIMARY KEY,
@@ -154,12 +157,28 @@ CREATE TABLE IF NOT EXISTS "payload_locked_documents" (
   "created_at" timestamp with time zone DEFAULT now() NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS "payload_locked_documents_rels" (
+  "id" serial PRIMARY KEY,
+  "order" integer,
+  "parent_id" integer NOT NULL REFERENCES "payload_locked_documents"("id") ON DELETE CASCADE,
+  "path" varchar NOT NULL,
+  "users_id" integer REFERENCES "users"("id") ON DELETE CASCADE
+);
+
 CREATE TABLE IF NOT EXISTS "payload_preferences" (
   "id" serial PRIMARY KEY,
   "key" varchar,
   "value" jsonb,
   "updated_at" timestamp with time zone DEFAULT now() NOT NULL,
   "created_at" timestamp with time zone DEFAULT now() NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS "payload_preferences_rels" (
+  "id" serial PRIMARY KEY,
+  "order" integer,
+  "parent_id" integer NOT NULL REFERENCES "payload_preferences"("id") ON DELETE CASCADE,
+  "path" varchar NOT NULL,
+  "users_id" integer REFERENCES "users"("id") ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS "payload_migrations" (
@@ -175,12 +194,18 @@ export async function GET() {
   try {
     const payload = await getPayloadClient()
     const db = (payload.db as any).drizzle
-    // Split and run each statement
     const statements = DDL.split(';').map(s => s.trim()).filter(Boolean)
+    const results: string[] = []
     for (const stmt of statements) {
-      await db.execute(stmt + ';')
+      try {
+        await db.execute(stmt + ';')
+        const match = stmt.match(/(CREATE TABLE IF NOT EXISTS|CREATE UNIQUE INDEX IF NOT EXISTS) "([^"]+)"/)
+        if (match) results.push(`✓ ${match[2]}`)
+      } catch (e: any) {
+        results.push(`✗ ${e.message.slice(0, 80)}`)
+      }
     }
-    return NextResponse.json({ ok: true, message: `Created tables` })
+    return NextResponse.json({ ok: true, results })
   } catch (e: any) {
     return NextResponse.json({ ok: false, error: e.message }, { status: 500 })
   }
