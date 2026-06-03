@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS "users" (
 CREATE UNIQUE INDEX IF NOT EXISTS "users_email_idx" ON "users" ("email");
 
 CREATE TABLE IF NOT EXISTS "users_sessions" (
-  "id" serial PRIMARY KEY,
+  "id" varchar PRIMARY KEY,
   "_order" integer NOT NULL,
   "_parent_id" integer NOT NULL REFERENCES "users"("id") ON DELETE CASCADE,
   "created_at" timestamp with time zone DEFAULT now(),
