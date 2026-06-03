@@ -12,7 +12,7 @@ export default async function Layout({ children }: Args) {
   return RootLayout({
     config: Promise.resolve(config),
     importMap,
-    serverFunction,
+    serverFunction: serverFunction as any,
     children,
   })
 }
