@@ -8,10 +8,16 @@ export async function GET() {
   try {
     const payload = await getPayload({ config })
     const db = payload.db as any
+    const drizzleInstance = db.drizzle
+    const schema = db.schema
 
-    // Import pushDevSchema directly
-    const { pushDevSchema } = await import('@payloadcms/drizzle')
-    await pushDevSchema(db)
+    if (!drizzleInstance || !schema) {
+      return NextResponse.json({ ok: false, error: 'No drizzle instance found' }, { status: 500 })
+    }
+
+    const { pushSchema } = await import('drizzle-kit/api')
+    const result = await pushSchema(schema, drizzleInstance)
+    await result.apply()
 
     return NextResponse.json({ ok: true, message: 'Schema pushed successfully' })
   } catch (e: any) {
