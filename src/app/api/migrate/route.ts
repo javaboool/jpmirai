@@ -7,8 +7,13 @@ export const maxDuration = 60
 export async function GET() {
   try {
     const payload = await getPayload({ config })
-    await payload.db.migrate()
-    return NextResponse.json({ ok: true, message: 'Migration complete' })
+    const db = payload.db as any
+
+    // Import pushDevSchema directly
+    const { pushDevSchema } = await import('@payloadcms/drizzle')
+    await pushDevSchema(db)
+
+    return NextResponse.json({ ok: true, message: 'Schema pushed successfully' })
   } catch (e: any) {
     return NextResponse.json({ ok: false, error: e.message }, { status: 500 })
   }
