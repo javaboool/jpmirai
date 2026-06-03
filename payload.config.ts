@@ -36,7 +36,7 @@ export default buildConfig({
       idleTimeoutMillis: 60000,
       max: 3,
     },
-    push: false,
+    push: true,
   }),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
