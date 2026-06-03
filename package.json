@@ -16,6 +16,7 @@
     "@livekit/components-react": "^2.9.21",
     "@livekit/components-styles": "^1.2.0",
     "@payloadcms/db-postgres": "^3.85.0",
+    "@payloadcms/drizzle": "^3.85.0",
     "@payloadcms/next": "^3.85.0",
     "@payloadcms/richtext-lexical": "^3.85.0",
     "class-variance-authority": "^0.7.1",
