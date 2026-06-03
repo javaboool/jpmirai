@@ -160,7 +160,14 @@ CREATE TABLE IF NOT EXISTS "payload_locked_documents_rels" (
   "order" integer,
   "parent_id" integer NOT NULL REFERENCES "payload_locked_documents"("id") ON DELETE CASCADE,
   "path" varchar NOT NULL,
-  "users_id" integer REFERENCES "users"("id") ON DELETE CASCADE
+  "news_id" integer REFERENCES "news"("id") ON DELETE CASCADE,
+  "messages_id" integer REFERENCES "messages"("id") ON DELETE CASCADE,
+  "notices_id" integer REFERENCES "notices"("id") ON DELETE CASCADE,
+  "media_id" integer REFERENCES "media"("id") ON DELETE CASCADE,
+  "users_id" integer REFERENCES "users"("id") ON DELETE CASCADE,
+  "settings_id" integer REFERENCES "settings"("id") ON DELETE CASCADE,
+  "user_profiles_id" integer REFERENCES "user_profiles"("id") ON DELETE CASCADE,
+  "consultation_logs_id" integer REFERENCES "consultation_logs"("id") ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS "payload_preferences" (
