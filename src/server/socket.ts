@@ -3,7 +3,12 @@ import { Server } from 'socket.io'
 
 const httpServer = createServer()
 const io = new Server(httpServer, {
-  cors: { origin: process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000', methods: ['GET', 'POST'] },
+  cors: {
+    origin: process.env.ALLOWED_ORIGINS
+      ? process.env.ALLOWED_ORIGINS.split(',')
+      : ['http://localhost:3000', 'https://project-14qf9.vercel.app'],
+    methods: ['GET', 'POST'],
+  },
 })
 
 io.on('connection', (socket) => {

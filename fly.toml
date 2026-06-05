@@ -1,16 +1,21 @@
-app = "jpmirai-socket"
-primary_region = "nrt"
+# fly.toml app configuration file generated for jpmirai-socket on 2026-06-05T17:14:39+09:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'jpmirai-socket'
+primary_region = 'nrt'
 
 [build]
-  dockerfile = "Dockerfile.socket"
+  dockerfile = 'Dockerfile.socket'
 
 [http_service]
   internal_port = 3001
   force_https = true
-  auto_stop_machines = "stop"
+  auto_stop_machines = 'stop'
   auto_start_machines = true
   min_machines_running = 0
 
 [[vm]]
-  size = "shared-cpu-1x"
-  memory = "256mb"
+  size = 'shared-cpu-1x'
+  memory = '256mb'
