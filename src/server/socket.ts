@@ -43,8 +43,19 @@ io.on('connection', (socket) => {
     io.to(data.staffSocketId).emit('user:call:rejected')
   })
 
-  socket.on('chat:message', (data: { roomId: string; message: string; sender: string }) => {
+  socket.on('chat:message', (data: { roomId: string; message: string; sender: string; userId?: string; userName?: string }) => {
     io.to(data.roomId).emit('chat:message', data)
+    // Notify staff of new message
+    io.to('staff-room').emit('chat:new_message', {
+      roomId: data.roomId,
+      userId: data.userId,
+      userName: data.userName || data.sender,
+      message: data.message,
+    })
+  })
+
+  socket.on('chat:staff:join', ({ roomId }: { roomId: string }) => {
+    socket.join(roomId)
   })
 })
 

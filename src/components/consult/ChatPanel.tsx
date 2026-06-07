@@ -28,7 +28,12 @@ export function ChatPanel({ onClose }: Props) {
   const send = () => {
     if (!input.trim()) return
     const msg: Message = { sender: user?.fullName || 'ユーザー', message: input, ts: Date.now() }
-    socketRef.current?.emit('chat:message', { ...msg, roomId })
+    socketRef.current?.emit('chat:message', {
+      ...msg,
+      roomId,
+      userId: user?.id || 'anon',
+      userName: user?.fullName || 'ユーザー',
+    })
     setMessages(p => [...p, msg])
     setInput('')
   }
