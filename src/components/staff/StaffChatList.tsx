@@ -76,13 +76,6 @@ export function StaffChatList() {
     if (!input.trim() || !activeRoomId) return
     const msg = { sender: 'スタッフ', message: input, ts: Date.now() }
     socketRef.current?.emit('chat:message', { ...msg, roomId: activeRoomId })
-    setChats(prev => ({
-      ...prev,
-      [activeRoomId]: {
-        ...prev[activeRoomId],
-        messages: [...prev[activeRoomId].messages, msg],
-      },
-    }))
     setInput('')
   }
 

@@ -34,7 +34,6 @@ export function ChatPanel({ onClose }: Props) {
       userId: user?.id || 'anon',
       userName: user?.fullName || 'ユーザー',
     })
-    setMessages(p => [...p, msg])
     setInput('')
   }
 
