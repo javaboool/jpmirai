@@ -69,17 +69,20 @@ export async function POST(req: NextRequest) {
       limit: 1,
     })
 
-    const name = [data.first_name, data.last_name].filter(Boolean).join(' ') || undefined
-    const role = data.public_metadata?.role as 'user' | 'staff' | 'admin' | undefined
+    const name = [data.first_name, data.last_name].filter(Boolean).join(' ') || 'User'
+    const role = (data.public_metadata?.role as 'user' | 'staff' | 'admin') || 'user'
 
     if (docs[0]) {
       await payload.update({
         collection: 'user-profiles',
         id: docs[0].id,
-        data: {
-          ...(name && { name }),
-          ...(role && { role }),
-        },
+        data: { name, role },
+      })
+    } else {
+      // Upsert: create if not exists
+      await payload.create({
+        collection: 'user-profiles',
+        data: { clerk_user_id: data.id, name, role },
       })
     }
   }
