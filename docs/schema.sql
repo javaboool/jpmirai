@@ -1,6 +1,6 @@
 -- JP-Mirai Portal — Neon PostgreSQL Schema
--- Run this in Neon SQL Editor if tables need to be recreated
--- Last updated: 2026-06-03
+-- Run this in Neon SQL Editor to create all tables from scratch
+-- Last updated: 2026-06-07
 
 CREATE TABLE IF NOT EXISTS "users" (
   "id" serial PRIMARY KEY,
