@@ -7,6 +7,7 @@ import { useRouter } from '@/i18n/navigation'
 function StaffCallContent() {
   const params = useSearchParams()
   const token = params.get('token') || ''
+  const roomName = params.get('room') || ''
   const router = useRouter()
 
   if (!token) return <p className="p-8 text-red-500">トークンがありません</p>
@@ -14,6 +15,8 @@ function StaffCallContent() {
   return (
     <VideoCallRoom
       token={token}
+      roomName={roomName}
+      isStaff={true}
       onDisconnect={() => router.push('/staff')}
     />
   )

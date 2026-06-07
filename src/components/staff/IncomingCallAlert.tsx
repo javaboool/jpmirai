@@ -31,7 +31,7 @@ export function IncomingCallAlert() {
     })
     const { token } = await res.json()
     socketRef.current?.emit('call:accept', { roomName: call.roomName, userId: call.userId })
-    window.location.href = `/ja/staff/call?token=${encodeURIComponent(token)}`
+    window.location.href = `/ja/staff/call?token=${encodeURIComponent(token)}&room=${encodeURIComponent(call.roomName)}`
   }
 
   const reject = () => {
