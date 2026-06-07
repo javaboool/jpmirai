@@ -14,9 +14,13 @@ type ClerkUserEvent = {
 }
 
 export async function POST(req: NextRequest) {
-  const secret = process.env.CLERK_WEBHOOK_SECRET
+  let secret = process.env.CLERK_WEBHOOK_SECRET
   if (!secret) {
     return NextResponse.json({ error: 'CLERK_WEBHOOK_SECRET not set' }, { status: 500 })
+  }
+  // Ensure whsec_ prefix
+  if (!secret.startsWith('whsec_')) {
+    secret = `whsec_${secret}`
   }
 
   const svixId = req.headers.get('svix-id')
