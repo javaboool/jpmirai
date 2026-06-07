@@ -29,6 +29,20 @@ io.on('connection', (socket) => {
     io.to(`user:${data.userId}`).emit('call:rejected')
   })
 
+  // Staff initiates call to specific user
+  socket.on('staff:call:user', (data: { targetUserId: string; roomName: string }) => {
+    io.to(`user:${data.targetUserId}`).emit('staff:incoming:call', {
+      roomName: data.roomName,
+      staffSocketId: socket.id,
+    })
+  })
+  socket.on('user:call:accepted', (data: { staffSocketId: string; roomName: string }) => {
+    io.to(data.staffSocketId).emit('user:call:accepted')
+  })
+  socket.on('user:call:rejected', (data: { staffSocketId: string }) => {
+    io.to(data.staffSocketId).emit('user:call:rejected')
+  })
+
   socket.on('chat:message', (data: { roomId: string; message: string; sender: string }) => {
     io.to(data.roomId).emit('chat:message', data)
   })

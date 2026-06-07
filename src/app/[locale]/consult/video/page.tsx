@@ -1,6 +1,6 @@
 'use client'
-import { useState } from 'react'
-import { io } from 'socket.io-client'
+import { useState, useEffect, useRef } from 'react'
+import { io, Socket } from 'socket.io-client'
 import { Header } from '@/components/layout/Header'
 import { VideoCallRoom } from '@/components/video/VideoCallRoom'
 import { CallDialing } from '@/components/video/CallDialing'
@@ -15,6 +15,40 @@ export default function VideoCallPage() {
   const router = useRouter()
   const [state, setState] = useState<State>('idle')
   const [token, setToken] = useState('')
+  const [incomingCall, setIncomingCall] = useState<{ roomName: string; staffSocketId: string } | null>(null)
+  const socketRef = useRef<Socket | null>(null)
+
+  // Listen for incoming calls from staff
+  useEffect(() => {
+    if (!user?.id) return
+    const socket = io(process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:3001')
+    socket.emit('join:user', user.id)
+    socket.on('staff:incoming:call', (data: { roomName: string; staffSocketId: string }) => {
+      setIncomingCall(data)
+    })
+    socketRef.current = socket
+    return () => { socket.disconnect() }
+  }, [user?.id])
+
+  const acceptIncoming = async () => {
+    if (!incomingCall) return
+    const res = await fetch('/api/livekit/token', {
+      method: 'POST',
+      body: JSON.stringify({ roomName: incomingCall.roomName, participantName: user?.fullName || 'user' }),
+      headers: { 'Content-Type': 'application/json' },
+    })
+    const { token: t } = await res.json()
+    socketRef.current?.emit('user:call:accepted', { staffSocketId: incomingCall.staffSocketId, roomName: incomingCall.roomName })
+    setToken(t)
+    setIncomingCall(null)
+    setState('connected')
+  }
+
+  const rejectIncoming = () => {
+    if (!incomingCall) return
+    socketRef.current?.emit('user:call:rejected', { staffSocketId: incomingCall.staffSocketId })
+    setIncomingCall(null)
+  }
 
   const startCall = async () => {
     setState('dialing')
@@ -45,6 +79,25 @@ export default function VideoCallPage() {
 
   if (state === 'connected' && token) {
     return <VideoCallRoom token={token} onDisconnect={() => { setState('idle'); router.push('/consult') }} />
+  }
+
+  // Incoming call from staff popup
+  if (incomingCall && state === 'idle') {
+    return (
+      <>
+        <Header />
+        <main className="max-w-md mx-auto px-4 py-20 text-center">
+          <div className="bg-white rounded-2xl border border-gray-200 p-8 shadow-lg">
+            <p className="font-bold text-gray-900 text-lg mb-2">スタッフから着信</p>
+            <p className="text-sm text-gray-500 mb-6">ビデオ通話に招待されています</p>
+            <div className="flex gap-3 justify-center">
+              <Button onClick={acceptIncoming} className="bg-green-500 hover:bg-green-600 px-8">応答</Button>
+              <Button variant="destructive" onClick={rejectIncoming} className="px-8">拒否</Button>
+            </div>
+          </div>
+        </main>
+      </>
+    )
   }
 
   return (
