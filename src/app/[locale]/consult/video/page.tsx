@@ -17,6 +17,26 @@ export default function VideoCallPage() {
   const [token, setToken] = useState('')
   const [incomingCall, setIncomingCall] = useState<{ roomName: string; staffSocketId: string } | null>(null)
   const socketRef = useRef<Socket | null>(null)
+  const dialTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  // Auto-cancel after 2 minutes of dialing
+  useEffect(() => {
+    if (state === 'dialing') {
+      dialTimeoutRef.current = setTimeout(() => {
+        setState('idle')
+        socketRef.current?.disconnect()
+        alert('スタッフが応答しませんでした。再度お試しください。')
+      }, 120000)
+    } else {
+      if (dialTimeoutRef.current) {
+        clearTimeout(dialTimeoutRef.current)
+        dialTimeoutRef.current = null
+      }
+    }
+    return () => {
+      if (dialTimeoutRef.current) clearTimeout(dialTimeoutRef.current)
+    }
+  }, [state])
 
   // Listen for incoming calls from staff
   useEffect(() => {

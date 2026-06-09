@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { io, Socket } from 'socket.io-client'
 import { Phone, PhoneOff } from 'lucide-react'
+import { requestNotificationPermission, sendBrowserNotification, playSound } from '@/lib/notify'
 
 type IncomingCall = { roomName: string; userName: string; userId: string }
 
@@ -11,11 +12,14 @@ export function IncomingCallAlert() {
   const audioRef = useRef<HTMLAudioElement | null>(null)
 
   useEffect(() => {
+    requestNotificationPermission()
     const socket = io(process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:3001')
     socket.emit('join:staff')
     socket.on('call:incoming', (data: IncomingCall) => {
       setCall(data)
       audioRef.current?.play().catch(() => {})
+      playSound('/sounds/ringtone.mp3')
+      sendBrowserNotification('📞 着信あり', `${data.userName} さんからビデオ通話`)
     })
     socket.on('call:answered', () => setCall(null))
     socketRef.current = socket

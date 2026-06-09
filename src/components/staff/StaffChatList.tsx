@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { io, Socket } from 'socket.io-client'
 import { MessageSquare, Send, X } from 'lucide-react'
+import { requestNotificationPermission, sendBrowserNotification, playSound } from '@/lib/notify'
 
 type ChatEntry = {
   roomId: string
@@ -19,10 +20,13 @@ export function StaffChatList() {
   const bottomRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
+    requestNotificationPermission()
     const socket = io(process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:3001')
     socket.emit('join:staff')
 
     socket.on('chat:new_message', (data: { roomId: string; userId: string; userName: string; message: string }) => {
+      playSound('/sounds/ringtone.mp3')
+      sendBrowserNotification('💬 新しいチャット', `${data.userName}: ${data.message.slice(0, 50)}`)
       setChats(prev => {
         const existing = prev[data.roomId]
         return {
